@@ -1,0 +1,9 @@
+---
+- hosts: all
+
+  tasks:
+    - name: Grant demo user access to admin account.
+      authorized_key:
+        user: admin
+        state: present
+        key: "{{ lookup('file', 'templates/varnish-php.pub') }}"
