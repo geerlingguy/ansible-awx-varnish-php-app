@@ -16,6 +16,13 @@ It is assumed you're running three AWS EC2 instances, running Debian 10. The ins
 
 ## Usage
 
+Install required Ansible dependencies:
+
+    ansible-galaxy collection install -r requirements.yml
+    ansible-galaxy role install -r requirements.yml
+
+> Note: In Ansible 2.10 or later, you can just run: `ansible-galaxy install -r requirements.yml`
+
 Run the playbook:
 
     ansible-playbook main.yml

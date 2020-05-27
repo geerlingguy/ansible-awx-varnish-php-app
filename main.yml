@@ -1,16 +1,25 @@
 ---
 - name: Configure all servers.
   hosts: all
+  become: yes
+
   roles:
     - geerlingguy.security
 
+
 - name: Configure Varnish load balancer server.
   hosts: varnish
+  become: yes
+
   roles:
-    - geerlingguy.varnish
+    - role: geerlingguy.varnish
+      vars:
+        varnish_default_vcl_template_path: templates/default.vcl
+
 
 - name: Configure PHP application servers.
   hosts: php
+  become: yes
 
   roles:
     - geerlingguy.apache
@@ -22,17 +31,24 @@
       package:
         name: "libapache2-mod-php{{ php_version }}"
         state: present
+      notify: restart apache
 
-    - name: Copy hello world PHP script into place.
-      copy:
-        content: |
-          <?php
-          date_default_timezone_set('America/Chicago');
-          $datetime = date('Y-m-d h:i:s a', time());
-          $server_ip = $_SERVER['SERVER_ADDR'];
-          ?>
-          <html><body>
-            <p>Hello, Ansiblings, it is <?php print $datetime; ?> and this is server <code><?php print $server_ip; ?></code>!</p>
-          </body></html>
-        dest: /var/www/html/index.php
+    - name: Ensure default index page is removed.
+      file:
+        path: /var/www/html/index.html
+        state: absent
+
+    - name: Set colors appropriately.
+      set_fact:
+        background_color: "{{ '#1f8dd6' if (inventory_hostname == groups['php'][0]) else '#29335c'}}"
+      tags: ['deploy']
+
+    - name: Copy project files into place.
+      template:
+        src: "{{ item }}"
+        dest: "/var/www/html/{{ item }}"
         mode: 0644
+      loop:
+        - styles.css
+        - index.php
+      tags: ['deploy']
