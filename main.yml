@@ -1,0 +1,38 @@
+---
+- name: Configure all servers.
+  hosts: all
+  roles:
+    - geerlingguy.security
+
+- name: Configure Varnish load balancer server.
+  hosts: varnish
+  roles:
+    - geerlingguy.varnish
+
+- name: Configure PHP application servers.
+  hosts: php
+
+  roles:
+    - geerlingguy.apache
+    - geerlingguy.php_roles.php_versions
+    - geerlingguy.php_roles.php
+
+  tasks:
+    - name: Install apache mod_php package.
+      package:
+        name: "libapache2-mod-php{{ php_version }}"
+        state: present
+
+    - name: Copy hello world PHP script into place.
+      copy:
+        content: |
+          <?php
+          date_default_timezone_set('America/Chicago');
+          $datetime = date('Y-m-d h:i:s a', time());
+          $server_ip = $_SERVER['SERVER_ADDR'];
+          ?>
+          <html><body>
+            <p>Hello, Ansiblings, it is <?php print $datetime; ?> and this is server <code><?php print $server_ip; ?></code>!</p>
+          </body></html>
+        dest: /var/www/html/index.php
+        mode: 0644

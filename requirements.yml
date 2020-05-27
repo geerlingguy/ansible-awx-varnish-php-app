@@ -1,0 +1,8 @@
+---
+roles:
+  - name: geerlingguy.security
+  - name: geerlingguy.apache
+  - name: geerlingguy.varnish
+
+collections:
+  - name: geerlingguy.php_roles
