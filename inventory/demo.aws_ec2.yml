@@ -1,0 +1,14 @@
+---
+plugin: aws_ec2
+
+boto_profile: jeffgeerling
+
+regions:
+  - us-east-1
+
+keyed_groups:
+  - key: tags.group
+    separator: ''
+
+hostnames:
+  - network-interface.association.public-ip
