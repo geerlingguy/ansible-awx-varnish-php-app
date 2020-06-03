@@ -64,9 +64,11 @@ Test that it's working:
 
 ### Using the AWS EC2 dynamic inventory plugin
 
-See: [aws_ec2](https://docs.ansible.com/ansible/latest/plugins/inventory/aws_ec2.html) inventory source.
+The `inventory/demo.aws_ec2.yml` configuration uses the [`aws_ec2`](https://docs.ansible.com/ansible/latest/plugins/inventory/aws_ec2.html) inventory plugin.
 
-TODO.
+Test that it's working:
+
+    ansible-inventory -i inventory/demo.aws_ec2.yml --list
 
 ### Using AWS EC2 inventory source in Ansible Tower
 
